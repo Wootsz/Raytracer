@@ -5,3 +5,6 @@ C:\Users\Wouter\Desktop\Graphics\Practicum 2\p2template\bin\Debug\OpenTK.dll
 C:\Users\Wouter\Desktop\Graphics\Practicum 2\p2template\obj\Debug\template.csprojResolveAssemblyReference.cache
 C:\Users\Wouter\Desktop\Graphics\Practicum 2\p2template\obj\Debug\template.exe
 C:\Users\Wouter\Desktop\Graphics\Practicum 2\p2template\obj\Debug\template.pdb
+C:\Users\Wouter\Documents\GitHub\Raytracer\bin\Debug\template.exe.config
+C:\Users\Wouter\Documents\GitHub\Raytracer\obj\Debug\template.exe
+C:\Users\Wouter\Documents\GitHub\Raytracer\obj\Debug\template.pdb
