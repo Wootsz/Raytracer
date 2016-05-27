@@ -13,6 +13,7 @@ namespace Template
 		static int screenID;
 		static Game game;
 		static bool terminated = false;
+        public static Surface screen;
 		protected override void OnLoad( EventArgs e )
 		{
 			// called upon app init
@@ -20,9 +21,10 @@ namespace Template
 			GL.Enable( EnableCap.Texture2D );
 			GL.Disable( EnableCap.DepthTest );
 			GL.Hint( HintTarget.PerspectiveCorrectionHint, HintMode.Nicest );
-			ClientSize = new Size( 640, 400 );
+			ClientSize = new Size( 512, 512 );
 			game = new Game();
-			game.screen = new Surface( Width, Height );
+            screen = new Surface(Width, Height);
+            game.screen = screen;
 			Sprite.target = game.screen;
 			screenID = game.screen.GenTexture();
 			game.Init();

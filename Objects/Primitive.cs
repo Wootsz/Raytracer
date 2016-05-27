@@ -14,5 +14,10 @@ namespace template
         {
             
         }
+
+        protected virtual Intersection Intersect(Ray ray)
+        {
+            return null;
+        }
     }
 }

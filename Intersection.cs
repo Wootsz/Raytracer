@@ -13,7 +13,7 @@ namespace template
         public Primitive nearestPrimitive;
         public Vector3 normal;
 
-        public Intersection()
+        public Intersection(Vector3 point)
         {
 
         }
