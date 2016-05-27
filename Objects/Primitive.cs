@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Primitive
+    public class Primitive
     {
+        private float color;
+
+        public Primitive()
+        {
+            
+        }
     }
 }

@@ -6,7 +6,20 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Raytracer
+    public class Raytracer
     {
+        public Scene scene;
+        public Camera camera;
+
+        public Raytracer()
+        {
+
+        }
+
+        public void Render()
+        {
+            //for alle pixels{ Ray = new Ray}
+            //Plot(pixelposition,color)
+        }
     }
 }

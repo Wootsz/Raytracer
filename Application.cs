@@ -6,7 +6,18 @@ using System.Threading.Tasks;
 
 namespace template
 {
-    class Application
+    public class Application
     {
+        Raytracer raytracer;
+
+        public Application()
+        {
+            raytracer = new Raytracer();
+        }
+
+        public void Update()
+        {
+            raytracer.Render();
+        }
     }
 }
