@@ -37,7 +37,19 @@ namespace template
                 }
             }
             Console.WriteLine("Camera Position: " + camera.position);
+            Debug();
         }
 
+        public void Debug()
+        {
+            Ray ray;
+
+            for (int i = 0; i<100; i++)
+            {
+                OpenTKApp.screen.Plot((int)(OpenTKApp.screen.width * 3 / 4 + i - 50), (int)(screenHeight * 3 / 4 - camera.position.Z), 0xffffff);
+                ray = new Ray(new Vector3 (OpenTKApp.screen.width*3/4, screenHeight*3/4, 0), CalcMethods.Normalize(new Vector3(0,0,0)));
+                //OpenTKApp.screen.Plot();
+            }
+        }
     }
 }

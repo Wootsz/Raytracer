@@ -20,11 +20,11 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 10), 5, 65535);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, 65535);
             primitives.Add(sphere1);
-            sphere2 = new Sphere(new Vector3(0, 0, 10), 5, 111114);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, 111114);
             primitives.Add(sphere2);
-            sphere3 = new Sphere(new Vector3(-20, 0, 10), 5, 177114);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, 177114);
             primitives.Add(sphere3);
             plane1 = new Plane(new Vector3(0, 1, 0), 10, 0xffffff);
             primitives.Add(plane1);
