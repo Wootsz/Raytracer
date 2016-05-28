@@ -24,9 +24,9 @@ namespace template
         {
             direction = CalcMethods.Normalize(direction);
             Vector3 FOVdirection = new Vector3(direction.X * FOVfactor, direction.Y * FOVfactor, direction.Z * FOVfactor);
-            LTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(direction, Vector3.UnitY), direction) + CalcMethods.CrossProduct(direction, Vector3.UnitY) + direction;
-            RTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(direction, Vector3.UnitY), direction) + CalcMethods.CrossProduct(Vector3.UnitY, direction) + direction;
-            LBCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(Vector3.UnitY, direction), direction) + CalcMethods.CrossProduct(direction, Vector3.UnitY) + direction;
+            LTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(FOVdirection, Vector3.UnitY), FOVdirection) + CalcMethods.CrossProduct(FOVdirection, Vector3.UnitY) + FOVdirection;
+            RTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(FOVdirection, Vector3.UnitY), FOVdirection) + CalcMethods.CrossProduct(Vector3.UnitY, FOVdirection) + FOVdirection;
+            LBCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(Vector3.UnitY, FOVdirection), FOVdirection) + CalcMethods.CrossProduct(FOVdirection, Vector3.UnitY) + FOVdirection;
         }
     }
 }

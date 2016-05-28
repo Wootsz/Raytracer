@@ -12,13 +12,15 @@ namespace template
     {
         public Scene scene;
         public Camera camera;
-        public int screenWidth = 512, screenHeight = 512;
+        public int screenWidth, screenHeight;
 
         public Raytracer()
         {
             camera = new Camera(Vector3.Zero, new Vector3(0, 0, 1));
             scene = new Scene();
             camera.position = Vector3.Zero;
+            screenHeight = Template.OpenTKApp.screen.height;
+            screenWidth = Template.OpenTKApp.screen.width / 2;
         }
 
         public void Render()
@@ -34,6 +36,7 @@ namespace template
                     OpenTKApp.screen.Plot(x, y, (int)scene.Intersect(ray));
                 }
             }
+            Console.WriteLine("Camera Position: " + camera.position);
         }
 
     }

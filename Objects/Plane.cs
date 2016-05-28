@@ -25,11 +25,16 @@ namespace template
             this.color = color;
         }
 
-        public  Intersection Intersect(Ray ray)
+        public override Intersection Intersect(Ray ray)
         {
-            ray.t = -(CalcMethods.DotProduct(ray.origin, normal) + distance) / CalcMethods.DotProduct(ray.direction, normal);
-            Vector3 point = ray.origin + ray.t * ray.direction;
-            return new Intersection(point, this, ray);
+            float t = -(CalcMethods.DotProduct(ray.origin, normal) + distance) / CalcMethods.DotProduct(ray.direction, normal);
+            if (t > 0 && t < ray.t)
+            {
+                ray.t = t;
+                Vector3 point = ray.origin + ray.t * ray.direction;
+                return new Intersection(point, this, ray);
+            }
+            else return null;
         }
     }
 }
