@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace template
 {
     public class Primitive
     {
-        private float color;
+        public float color;
+        public float specularity;
 
         public Primitive()
         {
             
         }
 
-        protected virtual Intersection Intersect(Ray ray)
+        public virtual Intersection Intersect(Ray ray)
         {
             return null;
         }

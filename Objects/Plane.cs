@@ -19,17 +19,18 @@ namespace template
         /// </summary>
         /// <param name="normal">A normal for the plane</param>
         /// <param name="distance">Distance from the origin</param>
-        public Plane(Vector3 normal, float distance)
+        public Plane(Vector3 normal, float distance, float color)
         {
             this.normal = normal;
             this.distance = distance;
+            this.color = color;
         }
 
-        protected override Intersection Intersect(Ray ray)
+        public override Intersection Intersect(Ray ray)
         {
             ray.t = -(CalcMethods.DotProduct(ray.origin, normal) + distance) / CalcMethods.DotProduct(ray.direction, normal);
             Vector3 point = ray.origin + ray.t * ray.direction;
-            return new Intersection(point);
+            return new Intersection(point, this);
         }
     }
 }

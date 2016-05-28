@@ -18,6 +18,7 @@ namespace template
         {
             camera = new Camera();
             scene = new Scene();
+            camera.position = Vector3.Zero;
         }
 
         public void Render()
@@ -28,11 +29,8 @@ namespace template
             {
                 for (int y = 0; y < screenHeight; y++)
                 {
-                    ray = new Ray();
-                    ray.origin = new Vector3(camera.position);
-
-                    float color; //= rayintersection.color;
-                    OpenTKApp.screen.Plot(x, y, (int)color);
+                    ray = new Ray(camera.position, new Vector3(x,y,camera.screenPlane.distance) - camera.position);
+                    OpenTKApp.screen.Plot(x, y, (int)scene.Intersect(ray));
                 }
             }
         }

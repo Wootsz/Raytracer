@@ -11,11 +11,14 @@ namespace template
     {
         public float intersectionDistance;
         public Primitive nearestPrimitive;
-        public Vector3 normal;
+        public Vector3 normal, intersectionPoint;
+        public float color;
 
-        public Intersection(Vector3 point)
+        public Intersection(Vector3 intersectionPoint, Primitive nearestPrimitive)
         {
-
+            this.intersectionPoint = intersectionPoint;
+            this.nearestPrimitive = nearestPrimitive;
+            color = nearestPrimitive.color;
         }
     }
 }

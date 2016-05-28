@@ -10,6 +10,12 @@ namespace template
     public class Camera
     {
         public Vector3 position;
-        public Vector3 p0, p1, p2;      //screen corners (moet misschien anders)
+        public Plane screenPlane;
+
+        public Camera()
+        {
+            screenPlane = new Plane(new Vector3(1,0,1),1,0);
+            
+        }
     }
 }
