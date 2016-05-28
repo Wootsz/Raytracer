@@ -12,7 +12,7 @@ namespace template
         public Vector3 position;
         public float radius;
 
-        public Sphere(Vector3 position, float radius, float color)
+        public Sphere(Vector3 position, float radius, float color, float specularity)
         {
             this.position = position;
             this.radius = radius;

@@ -12,14 +12,14 @@ namespace template
         public float intersectionDistance;
         public Primitive nearestPrimitive;
         public Vector3 normal, intersectionPoint;
-        public float color;
+        //public float color;
         public Ray ray;
 
         public Intersection(Vector3 intersectionPoint, Primitive nearestPrimitive, Ray ray)
         {
             this.intersectionPoint = intersectionPoint;
             this.nearestPrimitive = nearestPrimitive;
-            color = nearestPrimitive.color;
+            //color = nearestPrimitive.color;
             this.ray = ray;
         }
     }

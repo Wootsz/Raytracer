@@ -34,22 +34,20 @@ namespace template
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / screenWidth) + y * (camera.LBCorner - camera.LTCorner) / screenHeight)));
                     ray.t = 10000;
                     OpenTKApp.screen.Plot(x, y, (int)scene.Intersect(ray));
+
                 }
             }
-            Console.WriteLine("Camera Position: " + camera.position);
-            Debug();
         }
 
-        public void Debug()
-        {
-            Ray ray;
-
-            for (int i = 0; i<100; i++)
-            {
-                OpenTKApp.screen.Plot((int)(OpenTKApp.screen.width * 3 / 4 + i - 50), (int)(screenHeight * 3 / 4 - camera.position.Z), 0xffffff);
-                ray = new Ray(new Vector3 (OpenTKApp.screen.width*3/4, screenHeight*3/4, 0), CalcMethods.Normalize(new Vector3(0,0,0)));
-                //OpenTKApp.screen.Plot();
-            }
-        }
+        //public void Debug()
+        //{
+        //    Ray ray;
+        //    OpenTKApp.screen.Line(camera.LTCorner.X,camera.RTCorner, );
+        //    for (int i = 0; i < 100; i++)
+        //    {
+        //        ray = new Ray(new Vector3 (OpenTKApp.screen.width*3/4 - camera.position.Z, screenHeight*3/4, 0), CalcMethods.Normalize(new Vector3(i,1,0)));
+        //        OpenTKApp.screen.Line((int)(ray.origin.X + OpenTKApp.screen.width * 3 / 4), (int)(ray.origin.Z + screenHeight * 3 / 4), 1, 1, 0xffffff);
+        //    }
+        //}
     }
 }
