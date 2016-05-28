@@ -19,7 +19,7 @@ namespace template
             this.color = color; 
         }
 
-        public override Intersection Intersect(Ray ray)
+        public Intersection Intersect(Ray ray)
         {
             float a,b,c;
             a = CalcMethods.DotProduct(ray.direction, ray.direction);
@@ -28,7 +28,7 @@ namespace template
 
             float t1, t2;
             try { t1 = CalcMethods.ABCFormula(a, b, c, true); }
-            catch { t1 = -1; }    //no intersections
+            catch { t1 = -1; }
             try { t2 = CalcMethods.ABCFormula(a, b, c, false); }
             catch { t2 = -1; }
 
@@ -42,7 +42,7 @@ namespace template
                 return null;
 
             Vector3 point = ray.origin + ray.t * ray.direction;
-            return new Intersection(point, this);
+            return new Intersection(point, this, ray);
         }
     }
 }

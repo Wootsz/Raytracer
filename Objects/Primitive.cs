@@ -17,9 +17,9 @@ namespace template
             
         }
 
-        public virtual Intersection Intersect(Ray ray)
-        {
-            return null;
-        }
+        //public virtual Intersection Intersect(Ray ray)
+        //{
+        //    return null;
+        //}
     }
 }

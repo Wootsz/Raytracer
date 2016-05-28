@@ -73,6 +73,7 @@
     <Compile Include="Intersection.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="Objects\Primitive.cs" />
+    <Compile Include="Objects\Triangle.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Raytracer.cs" />
     <Compile Include="Scene.cs" />

@@ -16,7 +16,7 @@ namespace template
 
         public Raytracer()
         {
-            camera = new Camera();
+            camera = new Camera(Vector3.Zero, new Vector3(0, 0, 1));
             scene = new Scene();
             camera.position = Vector3.Zero;
         }
@@ -29,7 +29,8 @@ namespace template
             {
                 for (int y = 0; y < screenHeight; y++)
                 {
-                    ray = new Ray(camera.position, new Vector3(x,y,camera.screenPlane.distance) - camera.position);
+                    ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / screenWidth) + y * (camera.LBCorner - camera.LTCorner) / screenHeight)));
+                    ray.t = 10000;
                     OpenTKApp.screen.Plot(x, y, (int)scene.Intersect(ray));
                 }
             }

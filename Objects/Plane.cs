@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK;                           //!
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 
 namespace template
 {
@@ -26,11 +25,11 @@ namespace template
             this.color = color;
         }
 
-        public override Intersection Intersect(Ray ray)
+        public  Intersection Intersect(Ray ray)
         {
             ray.t = -(CalcMethods.DotProduct(ray.origin, normal) + distance) / CalcMethods.DotProduct(ray.direction, normal);
             Vector3 point = ray.origin + ray.t * ray.direction;
-            return new Intersection(point, this);
+            return new Intersection(point, this, ray);
         }
     }
 }

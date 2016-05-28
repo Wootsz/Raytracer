@@ -23,7 +23,7 @@ namespace template
         public void Update()
         {
             raytracer.Render();
-            HandleInput();
+            //HandleInput();
         }
 
         public void HandleInput()

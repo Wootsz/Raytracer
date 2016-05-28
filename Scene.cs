@@ -9,22 +9,18 @@ namespace template
 {
     public class Scene
     {
-        public List<Primitive> primitives;
+        public List<Sphere> spheres;
         public List<Light> lightSources;
         Sphere sphere1, sphere2, sphere3;
         Light light1;
 
         public Scene()
         {
-            primitives = new List<Primitive>();
+            spheres = new List<Sphere>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(1, 1, 1), 1, 65535);
-            primitives.Add(sphere1);
-            sphere2 = new Sphere(new Vector3(8, 0, 3), 5, 0);
-            primitives.Add(sphere2);
-            sphere3 = new Sphere(new Vector3(14, 0, 3), 5, 0);
-            primitives.Add(sphere3);
+            sphere1 = new Sphere(new Vector3(0, 0, 10), 5, 65535);
+            spheres.Add(sphere1);
 
             light1 = new Light();
             lightSources.Add(light1);
@@ -34,7 +30,7 @@ namespace template
         {
             float c = 0;
             Intersection i;
-            foreach(Primitive p in primitives)
+            foreach(Sphere p in spheres)
             {
                 i = p.Intersect(ray);
                 if (i != null)

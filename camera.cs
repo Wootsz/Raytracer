@@ -9,13 +9,24 @@ namespace template
 {
     public class Camera
     {
-        public Vector3 position;
-        public Plane screenPlane;
+        public Vector3 position, direction, LTCorner, RTCorner, LBCorner;
+        public float FOVfactor;
 
-        public Camera()
+        public Camera(Vector3 position, Vector3 direction)
         {
-            screenPlane = new Plane(new Vector3(1,0,1),1,0);
-            
+            FOVfactor = 1f;
+            this.position = position;
+            this.direction = direction;
+            SetCorners();
+        }
+
+        public void SetCorners()
+        {
+            direction = CalcMethods.Normalize(direction);
+            Vector3 FOVdirection = new Vector3(direction.X * FOVfactor, direction.Y * FOVfactor, direction.Z * FOVfactor);
+            LTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(direction, Vector3.UnitY), direction) + CalcMethods.CrossProduct(direction, Vector3.UnitY) + direction;
+            RTCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(direction, Vector3.UnitY), direction) + CalcMethods.CrossProduct(Vector3.UnitY, direction) + direction;
+            LBCorner = CalcMethods.CrossProduct(CalcMethods.CrossProduct(Vector3.UnitY, direction), direction) + CalcMethods.CrossProduct(direction, Vector3.UnitY) + direction;
         }
     }
 }
