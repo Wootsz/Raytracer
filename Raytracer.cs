@@ -12,7 +12,7 @@ namespace template
     {
         public Scene scene;
         public Camera camera;
-        public int screenWidth, screenHeight;
+        public int screenWidth, screenHeight, debugXtop, debugXbottom, debugYtop, debugYbottom;
 
         public Raytracer()
         {
@@ -21,6 +21,11 @@ namespace template
             camera.position = Vector3.Zero;
             screenHeight = Template.OpenTKApp.screen.height;
             screenWidth = Template.OpenTKApp.screen.width / 2;
+            debugXbottom = -100;
+            debugXtop = 100;
+            debugYbottom = -10;
+            debugYtop = 100;
+
         }
 
         public void Render()
@@ -32,10 +37,18 @@ namespace template
                 for (int y = 0; y < screenHeight; y++)
                 {
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / screenWidth) + y * (camera.LBCorner - camera.LTCorner) / screenHeight)));
-                    ray.t = 1000;
+                    ray.t = 100;
                     Vector3 color = scene.Intersect(ray);
                     OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
+                    if (y == screenHeight / 2 && x % 5 == 0 && ray.t != 1000)
+                    {
+                        int x1 = (int)((ray.origin.X - debugXbottom) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
+                        int y1 = screenHeight - (int)((ray.origin.Z - debugYbottom) / (debugYtop - debugYbottom) * screenHeight);
+                        int x2 = (int)(((ray.origin.X + ray.t * ray.direction.X) - debugXbottom) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
+                        int y2 = screenHeight - (int)(((ray.origin.Z + ray.t * ray.direction.Z) - debugYbottom) / (debugYtop - debugYbottom) * screenHeight);
 
+                        OpenTKApp.screen.Line(x1, y1, x2, y2, 16776961);
+                    }
                 }
             }
         }
