@@ -9,7 +9,7 @@ namespace template
 {
     public class Primitive
     {
-        public float color;
+        public Vector3 color;
         public float specularity;   //value between 0 and 1
 
         public Primitive()

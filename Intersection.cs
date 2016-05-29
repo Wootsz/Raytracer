@@ -12,15 +12,23 @@ namespace template
         public float intersectionDistance;
         public Primitive nearestPrimitive;
         public Vector3 normal, intersectionPoint;
-        //public float color;
         public Ray ray;
 
         public Intersection(Vector3 intersectionPoint, Primitive nearestPrimitive, Ray ray)
         {
             this.intersectionPoint = intersectionPoint;
             this.nearestPrimitive = nearestPrimitive;
-            //color = nearestPrimitive.color;
             this.ray = ray;
+            if (nearestPrimitive is Plane)
+            {
+                Plane p = nearestPrimitive as Plane;
+                normal = p.normal;
+            }
+            else if (nearestPrimitive is Sphere)
+            {
+                Sphere s = nearestPrimitive as Sphere;
+                normal = CalcMethods.Normalize(intersectionPoint - s.position);
+            }
         }
     }
 }

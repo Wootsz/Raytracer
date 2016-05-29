@@ -32,11 +32,17 @@ namespace template
                 for (int y = 0; y < screenHeight; y++)
                 {
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / screenWidth) + y * (camera.LBCorner - camera.LTCorner) / screenHeight)));
-                    ray.t = 10000;
-                    OpenTKApp.screen.Plot(x, y, (int)scene.Intersect(ray));
+                    ray.t = 1000;
+                    Vector3 color = scene.Intersect(ray);
+                    OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
 
                 }
             }
+        }
+
+        int CreateColor(int red, int green, int blue)
+        {
+            return (red << 16) + (green << 8) + blue;
         }
 
         //public void Debug()

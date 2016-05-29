@@ -18,15 +18,15 @@ namespace template
         /// Making a point-light source
         /// </summary>
         /// <param name="location">Position of the light</param>
-        /// <param name="b">Intensity of the blue color</param>
-        /// <param name="r">Intensity of the red color</param>
-        /// <param name="g">Intensity of the green color</param>
-        public Light(Vector3 location, float b, float r, float g)
+        /// <param name="b">Intensity of the red color - value between 0 and 1</param>
+        /// <param name="r">Intensity of the green color - value between 0 and 1</param>
+        /// <param name="g">Intensity of the blue color - value between 0 and 1</param>
+        public Light(Vector3 location,  float r, float g, float b)
         {
             this.location = location;
-            blueIntensity = b;
             redIntensity = r;
             greenIntensity = g;
+            blueIntensity = b;
         }
     }
 }

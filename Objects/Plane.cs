@@ -18,7 +18,7 @@ namespace template
         /// </summary>
         /// <param name="normal">A normal for the plane</param>
         /// <param name="distance">Distance from the origin</param>
-        public Plane(Vector3 normal, float distance, float color, float specularity)
+        public Plane(Vector3 normal, float distance, Vector3 color, float specularity)
         {
             this.normal = normal;
             this.distance = distance;

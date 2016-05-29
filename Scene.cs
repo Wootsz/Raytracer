@@ -13,32 +13,37 @@ namespace template
         public List<Light> lightSources;
         Sphere sphere1, sphere2, sphere3;
         Plane plane1;
-        Light light1;
+        Light light1, light2;
 
         public Scene()
         {
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, 65535, 0);
+            sphere1 = new Sphere(new Vector3(5, 0, 20), 5, new Vector3(100,0,0), 1);
             primitives.Add(sphere1);
-            
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, 111114, 0);
+
+            sphere2 = new Sphere(new Vector3(0, 0, 20), 5, new Vector3(0, 100, 0), 0.5f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, 177114, 0);
+            sphere3 = new Sphere(new Vector3(-5, 0, 20), 5, new Vector3(0, 0, 100), 0);
             primitives.Add(sphere3);
 
-            plane1 = new Plane(new Vector3(0, 1, 0), 10, 0xffffff, 0);
+            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(-20, 5, 10), 1, 1, 1);
+            light1 = new Light(new Vector3(30, 10, 0), 1, 1, 1);
             lightSources.Add(light1);
         }
 
-        public float Intersect(Ray ray)
+        /// <summary>
+        /// For each ray, check if it intersects with any of the primitives
+        /// </summary>
+        /// <param name="ray">The ray to check</param>
+        /// <returns>Returns the color of a pixel</returns>
+        public Vector3 Intersect(Ray ray)
         {
-                float c = 0;
+                Vector3 c = Vector3.Zero;
                 Intersection smallest = null;
                 foreach (Primitive p in primitives)
                 {
@@ -46,37 +51,41 @@ namespace template
                     if (i != null && (smallest == null || CalcMethods.VectorLength(i.intersectionPoint) < CalcMethods.VectorLength(smallest.intersectionPoint)))
                         smallest = i;
                 }
-                /*if (smallest != null)
-                    {
-                        if (smallest.nearestPrimitive.specularity == 0)
-                        {
-                            foreach (Light light in lightSources)
-                            {
-                                Ray shadowray = new Ray(smallest.intersectionPoint, CalcMethods.Normalize(light.location - smallest.intersectionPoint));
-                                c = smallest.nearestPrimitive.color * light.redIntensity; //blueintensity //greenintensity
-                            }
-                        }
-                        else if (smallest.nearestPrimitive.specularity == 1)
-                        {
-                            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, smallest.normal) * smallest.normal;
-                            Ray secondray = new Ray(smallest.intersectionPoint, CalcMethods.Normalize(R));
-                            c = smallest.nearestPrimitive.specularity * Intersect(secondray) + (1 - smallest.nearestPrimitive.specularity) * smallest.nearestPrimitive.color;
-                        }
-                        else
-                        {
-                            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, smallest.normal) * smallest.normal;
-                            Ray secondray = new Ray(smallest.intersectionPoint, CalcMethods.Normalize(R));
-                            c = smallest.nearestPrimitive.specularity * Intersect(secondray) + (1 - smallest.nearestPrimitive.specularity) * smallest.nearestPrimitive.color;
-                            foreach (Light light in lightSources)
-                            {
-                                Ray shadowray = new Ray(smallest.intersectionPoint, CalcMethods.Normalize(light.location - smallest.intersectionPoint));
-                            }
-                        }
-                    }*/
-            if (smallest != null)
-                return smallest.nearestPrimitive.color;
-            else { return 0; }
-            
+                if (smallest != null)
+                    return /*smallest.nearestPrimitive.specularity * */LightIntensity(smallest) * smallest.nearestPrimitive.color /*+ (1 - smallest.nearestPrimitive.specularity) * smallest.nearestPrimitive.color*/;
+                else 
+                    return Vector3.Zero; 
         }
+
+        /// <summary>
+        /// Method for sending a shadow ray to each lightsource
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Vector3 LightIntensity(Intersection i)
+        {
+            Vector3 lightintensity = Vector3.Zero;
+            foreach (Light light in lightSources)
+            {
+                Ray shadowray = new Ray(i.intersectionPoint /*+  i.normal * 0.01f*/, CalcMethods.Normalize(light.location - i.intersectionPoint));
+                shadowray.t = 1000;
+                bool intersect = false;
+                foreach (Primitive p in primitives)
+                {
+                    if (p.Intersect(shadowray) != null)
+                        intersect = true; break;
+                }
+                if (!intersect)
+                    lightintensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
+            }
+            return lightintensity/lightSources.Count;
+        }
+
+        //public Vector3 SecondaryRay(Intersection i, Ray ray)
+        //{
+        //    Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
+        //    Ray secondray = new Ray(i.intersectionPoint, CalcMethods.Normalize(R));        
+        //    return Intersect(secondray);
+        //}
     }
 }
