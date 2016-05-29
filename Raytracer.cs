@@ -40,14 +40,36 @@ namespace template
                     ray.t = 1000;
                     Vector3 color = scene.Intersect(ray);
                     OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
-                    if (y == screenHeight / 2 && x % 10 == 0 && ray.t != 1000)
+                    if (y == screenHeight / 2 && x % 10 == 0)
                     {
                         int x1 = (int)((ray.origin.X - debugXbottom) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
                         int y1 = screenHeight - (int)((ray.origin.Z - debugYbottom) / (debugYtop - debugYbottom) * screenHeight);
                         int x2 = (int)(((ray.origin.X + ray.t * ray.direction.X) - debugXbottom) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
                         int y2 = screenHeight - (int)(((ray.origin.Z + ray.t * ray.direction.Z) - debugYbottom) / (debugYtop - debugYbottom) * screenHeight);
 
-                        OpenTKApp.screen.Line(x1, y1, x2, y2, 16776961);
+                        if (x2 > 2 * screenWidth)
+                        {
+                            y2 -= (int)((x2 - (2 * screenWidth)) * ((float)(y2-y1) / (float)(x2-x1)));
+                            x2 = 2 * screenWidth - 1;
+                        }
+
+                        if (x2 < screenWidth)
+                        {
+                            y2 += (int)((screenWidth - x2) * ((float)(y2 - y1) / (float)(x2 - x1)));
+                            x2 = screenWidth;
+                        }
+
+                        if (y2 < 0)
+                        {
+                            x2 -= (int)((y2) * ((float)(x2 - x1) / (float)(y2 - y1)));
+                            y2 = 0;
+                        }
+
+                        if (y2 > screenHeight)
+                        {
+                            y2 = screenHeight - 1;
+                        }
+                        OpenTKApp.screen.Line(x1, y1, x2, y2, 16711680);
                     }
                 }
             }
