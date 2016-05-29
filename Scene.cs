@@ -20,13 +20,13 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(5, 0, 10), 5, new Vector3(100, 0, 0), 1);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 20, new Vector3(100, 0, 0), 1);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 10), 5, new Vector3(0, 100, 0), 0.5f);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 20, new Vector3(0, 100, 0), 0.5f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-5, 0, 10), 5, new Vector3(0, 0, 100), 0);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 20, new Vector3(0, 0, 100), 0);
             primitives.Add(sphere3);
 
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
@@ -52,9 +52,9 @@ namespace template
                         smallest = i;
                 }
                 if (smallest != null)
-                    //return LightIntensity(smallest) * smallest.nearestPrimitive.color;
-                    return (1 - smallest.nearestPrimitive.specularity) * LightIntensity(smallest) * smallest.nearestPrimitive.color + 
-                            smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
+                    return LightIntensity(smallest) * smallest.nearestPrimitive.color;
+                    //return (1 - smallest.nearestPrimitive.specularity) * LightIntensity(smallest) * smallest.nearestPrimitive.color + 
+                            //smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
                 else
                     return Vector3.Zero; 
         }
@@ -86,11 +86,11 @@ namespace template
             return lightintensity/lightSources.Count;
         }
 
-        public Vector3 SecondaryRay(Intersection i, Ray ray)
-        {
-            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
-            Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
-            return Intersect(secondray);
-        }
+        //public Vector3 SecondaryRay(Intersection i, Ray ray)
+        //{
+        //    Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
+        //    Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
+        //    return Intersect(secondray);
+        //}
     }
 }
