@@ -36,5 +36,12 @@ namespace template
             }
             else return null;
         }
+
+        public override bool Occlusion(Ray ray)
+        {
+            if (Intersect(ray) != null)
+                return true;
+            else return false;
+        }
     }
 }

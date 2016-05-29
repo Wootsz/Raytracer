@@ -66,5 +66,20 @@ namespace template
             //return new Intersection(point, this, ray); 
             return Intersect2(ray);
         }
+
+        public override bool Occlusion(Ray ray)
+        {
+            //Vector3 raytpos = ray.origin + ray.t * ray.direction;
+            //if (CalcMethods.VectorLength(position - raytpos) < radius)
+            //    return true;
+            //else return false;
+
+            Vector3 c = this.position - ray.origin;
+            float t = CalcMethods.DotProduct(c, ray.direction);
+            Vector3 q = c - t * ray.direction;
+            float p2 = CalcMethods.DotProduct(q, q);
+            if (p2 > radius) { return false; }
+            else return true;
+        }
     }
 }

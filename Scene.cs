@@ -20,19 +20,19 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(5, 0, 20), 5, new Vector3(100,0,0), 1);
+            sphere1 = new Sphere(new Vector3(5, 0, 10), 5, new Vector3(100, 0, 0), 1);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 20), 5, new Vector3(0, 100, 0), 0.5f);
+            sphere2 = new Sphere(new Vector3(0, 0, 10), 5, new Vector3(0, 100, 0), 0.5f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-5, 0, 20), 5, new Vector3(0, 0, 100), 0);
+            sphere3 = new Sphere(new Vector3(-5, 0, 10), 5, new Vector3(0, 0, 100), 0);
             primitives.Add(sphere3);
 
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(30, 10, 0), 1, 1, 1);
+            light1 = new Light(new Vector3(-10, 20, -5), 1, 1, 1);
             lightSources.Add(light1);
         }
 
@@ -52,8 +52,10 @@ namespace template
                         smallest = i;
                 }
                 if (smallest != null)
-                    return /*smallest.nearestPrimitive.specularity * */LightIntensity(smallest) * smallest.nearestPrimitive.color /*+ (1 - smallest.nearestPrimitive.specularity) * smallest.nearestPrimitive.color*/;
-                else 
+                    //return LightIntensity(smallest) * smallest.nearestPrimitive.color;
+                    return (1 - smallest.nearestPrimitive.specularity) * LightIntensity(smallest) * smallest.nearestPrimitive.color + 
+                            smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
+                else
                     return Vector3.Zero; 
         }
 
@@ -67,25 +69,28 @@ namespace template
             Vector3 lightintensity = Vector3.Zero;
             foreach (Light light in lightSources)
             {
-                Ray shadowray = new Ray(i.intersectionPoint /*+  i.normal * 0.01f*/, CalcMethods.Normalize(light.location - i.intersectionPoint));
-                shadowray.t = 1000;
-                bool intersect = false;
+                Ray shadowray = new Ray(i.intersectionPoint +  i.normal * 0.01f, CalcMethods.Normalize(light.location - i.intersectionPoint));
+                //shadowray.t = CalcMethods.VectorLength(light.location - i.intersectionPoint);
+                bool occlusion = false;
                 foreach (Primitive p in primitives)
                 {
-                    if (p.Intersect(shadowray) != null)
-                        intersect = true; break;
+                    if (p.Occlusion(shadowray))
+                    {
+                        occlusion = true;
+                        break;
+                    }
                 }
-                if (!intersect)
+                if (!occlusion)
                     lightintensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
             }
             return lightintensity/lightSources.Count;
         }
 
-        //public Vector3 SecondaryRay(Intersection i, Ray ray)
-        //{
-        //    Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
-        //    Ray secondray = new Ray(i.intersectionPoint, CalcMethods.Normalize(R));        
-        //    return Intersect(secondray);
-        //}
+        public Vector3 SecondaryRay(Intersection i, Ray ray)
+        {
+            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
+            Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
+            return Intersect(secondray);
+        }
     }
 }

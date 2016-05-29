@@ -12,14 +12,8 @@ namespace template
         public Vector3 color;
         public float specularity;   //value between 0 and 1
 
-        public Primitive()
-        {
-            
-        }
-
-        public virtual Intersection Intersect(Ray ray)
-        {
-            return null;
-        }
+        public Primitive() { }
+        public virtual Intersection Intersect(Ray ray) { return null; }
+        public virtual bool Occlusion(Ray ray) { return false; }
     }
 }
