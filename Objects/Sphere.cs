@@ -32,9 +32,10 @@ namespace template
             float t = CalcMethods.DotProduct(c, ray.direction);
             Vector3 q = c - t * ray.direction;
             float p2 = CalcMethods.DotProduct(q, q);
-            if (p2 > radius) { return null; }
-            t -= (float)Math.Sqrt(radius - p2);
+            if (p2 > radius * radius || t < 0) { return null; }
+            t -= (float)Math.Sqrt(radius * radius - p2);
             if ((t < ray.t) && (t > 0)) { ray.t = t; }
+
             Vector3 point = ray.origin + ray.t * ray.direction;
             return new Intersection(point, this, ray);
             //return Intersect2(ray);
@@ -53,27 +54,27 @@ namespace template
         //    try { t2 = CalcMethods.ABCFormula(a, b, c, false); }
         //    catch { t2 = -1; }
 
-        //    if (t1 < ray.t && t2 < ray.t && t1 > 0 && t2 > 0)
+        //    if (t1 > 0 && t2 > 0)
         //        ray.t = Math.Min(t1, t2);
-        //    else if (t1 < 0 && t2 > 0 && t2 < ray.t)
+        //    else if (t1 < 0 && t2 > 0)
         //        ray.t = t2;
-        //    else if (t1 > 0 && t2 < 0 && t1 < ray.t)
+        //    else if (t1 > 0 && t2 < 0)
         //        ray.t = t1;
         //    else
         //        return null;
-
+              
         //    Vector3 point = ray.origin + ray.t * ray.direction;
         //    return new Intersection(point, this, ray);
         //}
 
-        public override bool Occlusion(Ray ray)
-        {
-            Vector3 c = this.position - ray.origin;
-            float t = CalcMethods.DotProduct(c, ray.direction);
-            Vector3 q = c - t * ray.direction;
-            float p2 = CalcMethods.DotProduct(q, q);
-            if (p2 > radius) { return false; }
-            else return true;
-        }
+        //public override bool Occlusion(Ray ray)
+        //{
+        //    Vector3 c = this.position - ray.origin;
+        //    float t = CalcMethods.DotProduct(c, ray.direction);
+        //    Vector3 q = c - t * ray.direction;
+        //    float p2 = CalcMethods.DotProduct(q, q);
+        //    if (p2 > radius) { return false; }
+        //    else return true;
+        //}
     }
 }

@@ -9,6 +9,6 @@ namespace template.Objects
 {
     class Triangle
     {
-        public Vector3 p0, p1, p2, p3;         //triangle hoeken posities
+        //public Vector3 p0, p1, p2, p3;         //triangle hoeken posities
     }
 }

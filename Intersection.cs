@@ -28,6 +28,8 @@ namespace template
             {
                 Sphere s = nearestPrimitive as Sphere;
                 normal = CalcMethods.Normalize(intersectionPoint - s.position);
+                if (CalcMethods.DotProduct(normal, ray.direction) < 0)
+                    normal *= -1;
             }
         }
     }

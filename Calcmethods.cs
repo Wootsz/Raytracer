@@ -9,6 +9,7 @@ namespace template
 {
     public class CalcMethods
     {
+
         /// <summary>
         /// Method for normalizing a vector
         /// </summary>
@@ -17,7 +18,7 @@ namespace template
         public static Vector3 Normalize(Vector3 v)
         {
             float length = VectorLength(v);
-            return new Vector3(v.X/length, v.Y/length, v.Z/length);
+            return new Vector3(v.X / length, v.Y / length, v.Z / length);
         }
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace template
         /// <returns>Returns the length of a vector</returns>
         public static float VectorLength(Vector3 v)
         {
-            return (float)Math.Sqrt(DotProduct(v,v));
+            return (float)Math.Sqrt(DotProduct(v, v));
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace template
         /// <returns>Returns a normal of two vectors</returns>
         public static Vector3 CrossProduct(Vector3 a, Vector3 b)
         {
-            return new Vector3( a.Y * b.Z - a.Z * b.Y,
+            return new Vector3(a.Y * b.Z - a.Z * b.Y,
                                 a.Z * b.X - a.X * b.Z,
                                 a.X * b.Y - a.Y * b.X);
         }
@@ -63,9 +64,9 @@ namespace template
         {
             float D = b * b - 4 * a * c;
             if (positiveSqrtD)
-                return (float)(-b + Math.Sqrt(D) / (2 * a));
+                return (float)((-b + Math.Sqrt(D)) / (2 * a));
             else
-                return (float)(-b - Math.Sqrt(D) / (2 * a));
+                return (float)((-b - Math.Sqrt(D)) / (2 * a));
         }
     }
 }
