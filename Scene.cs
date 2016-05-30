@@ -69,7 +69,7 @@ namespace template
             Vector3 lightintensity = Vector3.Zero;
             foreach (Light light in lightSources)
             {
-                Ray shadowray = new Ray(i.intersectionPoint +  i.normal * 0.01f, CalcMethods.Normalize(light.location - i.intersectionPoint));
+                Ray shadowray = new Ray(i.intersectionPoint +  i.normal * 0.001f, CalcMethods.Normalize(light.location - i.intersectionPoint));
                 shadowray.t = CalcMethods.VectorLength(light.location - i.intersectionPoint);
                 bool occlusion = false;
                 foreach (Primitive p in primitives)

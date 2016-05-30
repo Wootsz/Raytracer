@@ -75,7 +75,11 @@ namespace template
                 raytracer.camera.position.Y -= velocity;
 
             if (keyboard[OpenTK.Input.Key.Left]) { }
-            if (keyboard[OpenTK.Input.Key.Right]) { }
+            if (keyboard[OpenTK.Input.Key.Right])
+            {
+                raytracer.camera.direction = CalcMethods.Normalize(raytracer.camera.direction + CalcMethods.CrossProduct(raytracer.camera.direction, Vector3.UnitY) *.05f);
+                raytracer.camera.SetCorners();
+            }
             if (keyboard[OpenTK.Input.Key.Up]) { }
             if (keyboard[OpenTK.Input.Key.Down]) { }
 
