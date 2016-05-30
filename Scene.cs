@@ -22,22 +22,22 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 0, 0), 0);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(200, 0, 0), 0);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 255, 0), 0);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 200, 0), 0);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 255), 0);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 200), 0);
             primitives.Add(sphere3);
 
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(20, 10, -10), 50,40,30);
+            light1 = new Light(new Vector3(20, 10, -10), 500,500,500);
             lightSources.Add(light1);
 
-            //light2 = new Light(new Vector3(10, 20, -5), 1f, 1f, 1f);
+            //light2 = new Light(new Vector3(-20, 10, -10), 500, 500, 500);
             //lightSources.Add(light2);
 
             screenHeight = Template.OpenTKApp.screen.height;
@@ -53,7 +53,36 @@ namespace template
         /// </summary>
         /// <param name="ray">The ray to check</param>
         /// <returns>Returns the color of a pixel</returns>
-        public Vector3 Intersect(Ray ray)
+        public Vector3 Intersect(Ray ray, int recursionTimes)
+        {
+            //Calculate the smallest intersection with a primitive
+            Intersection smallest = IntersectScene(ray);
+            //If there were no intersections, return Vector3.Zero, which corresponds to a black color
+            if (smallest == null)
+                return Vector3.Zero;
+            //If there IS an intersection with an object
+            Vector3 c = smallest.nearestPrimitive.Color(smallest.intersectionPoint);
+            Vector3 N = smallest.normal;
+            Vector3 I = smallest.intersectionPoint;
+            float s = smallest.nearestPrimitive.specularity;
+            if (recursionTimes > 0 && s != 0)
+            { 
+                recursionTimes--;
+                Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, N) * N;
+                Ray secondray = new Ray(smallest.intersectionPoint + N * 0.001f, CalcMethods.Normalize(R));
+                secondray.t = 100;
+                //Draw2DRay(secondray, 255255);
+                if (s == 1)
+                    return Intersect(secondray, recursionTimes) * c;
+                else
+                    return (s - 1) * DirectIllumination(smallest.intersectionPoint, smallest.normal) * c +
+                        s * Intersect(secondray, recursionTimes) * c;
+            }
+            else
+                return DirectIllumination(I, N) * c;
+        }
+
+        public Intersection IntersectScene(Ray ray)
         {
             //Variable for calculating the smallest intersection
             Intersection smallest = null;
@@ -67,83 +96,48 @@ namespace template
                 if (i != null && (smallest == null || CalcMethods.VectorLength(i.intersectionPoint) < CalcMethods.VectorLength(smallest.intersectionPoint)))
                     smallest = i;
             }
-            //If there IS an intersection with an object
-            if (smallest != null)
-            {   
-                float raylength = CalcMethods.VectorLength(smallest.intersectionPoint - ray.origin);
-                Vector3 color = LightIntensity(smallest);
-                color /= Math.Max(Math.Max(color.X, color.Y), color.Z);
-                
-                if (smallest.nearestPrimitive.specularity == 0)
-                    return color * smallest.nearestPrimitive.Color(smallest.intersectionPoint);
+            return smallest;
+        }
 
-                else if (smallest.nearestPrimitive.specularity == 1)
-                    return SecondaryRay(smallest, ray);
-
-                else
-                    return (1 - smallest.nearestPrimitive.specularity) * color * smallest.nearestPrimitive.Color(smallest.intersectionPoint) +
-                    smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
+        public Vector3 DirectIllumination(Vector3 I, Vector3 N)
+        {            
+            //Make a Vector3 lightintensity and set it to 0, in case there were no lights reachable
+            Vector3 lightIntensity = Vector3.Zero;
+            foreach (Light light in lightSources)
+            {
+                Vector3 L = light.location - I;
+                float distance = CalcMethods.VectorLength(L);
+                L *= (1.0f / distance);
+                if (!IsVisible(I, L, distance))
+                    break;
+                float attenuation = 1 / (distance * distance);
+                lightIntensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity) * 
+                    CalcMethods.DotProduct(N, L) * attenuation;
             }
-            //If there were no intersections, return Vector3.Zero, which corresponds to a black color
-            else
-                return Vector3.Zero; 
+            return lightIntensity;
         }
 
         /// <summary>
-        /// Method for sending a shadow ray to each lightsource
+        /// Method checking whether something is visible
         /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        public Vector3 LightIntensity(Intersection i)
-        {      
-            //add 1 to the counter for each (pair of) shadow ray(s)
-            count++;
-            //Make a Vector3 lightintensity and set it to 0, in case there were no lights reachable
-            Vector3 lightintensity = Vector3.Zero;
-            //Check all the light sources:
-            foreach (Light light in lightSources)
-            {            
-                //Make a shadow ray: origin is the intersectionpoint + small offset, direction is the light source
-                Ray shadowray = new Ray(i.intersectionPoint +  i.normal * 0.0001f, CalcMethods.Normalize(light.location - i.intersectionPoint));
-                //Set the shadow ray's t for the debug output
-                shadowray.t = CalcMethods.VectorLength(light.location - i.intersectionPoint);
-                //Set the occlusion to false in the first place
-                bool occlusion = false;
-                foreach (Primitive p in primitives)
-                {
-                    Intersection intersect = p.Intersect(shadowray);
-                    if (intersect != null ) //&& intersectie is dichterbij de lamp als de originele intersectie
-                    {
-                        if (CalcMethods.VectorLength(intersect.intersectionPoint - light.location) < CalcMethods.VectorLength(i.intersectionPoint - light.location))
-                        {
-                            occlusion = true;
-                            break;
-                        }
-                    }
-                }
-                if (i.intersectionPoint.Y ==0  && count % 10 == 0)
-                        Draw2DRay(shadowray, 101111);
-                // INTENSITY FACTOR FOR LIGHT ANGLE CALCULATION, WIP, GROUND WORKS, SPHERES ARE A LITTLE WEIRD
-                if (!occlusion)
-                {
-                    Vector3 l = new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
-                    float intensityFactor = CalcMethods.DotProduct(shadowray.direction, i.normal);
-                    float shadowraylength = CalcMethods.VectorLength(light.location - i.intersectionPoint);
-                    //Vector3 R = shadowray.direction - 2*(CalcMethods.DotProduct(shadowray.direction, i.normal)*i.normal);
-                    lightintensity += l * intensityFactor / (shadowraylength*shadowraylength) /* * (float)Math.Pow(CalcMethods.DotProduct(l,R),i.nearestPrimitive.specularity)*/;
-                }
-            }
-            lightintensity /= lightSources.Count;
-            return lightintensity;
-        }
-
-        public Vector3 SecondaryRay(Intersection i, Ray ray)
+        public bool IsVisible(Vector3 I, Vector3 L, float distance)
         {
-            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
-            Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
-            secondray.t = 100;
-            Draw2DRay(secondray, 255255);
-            return Intersect(secondray);
+            //Make a shadow ray: origin is the intersectionpoint + small offset, direction is the light source
+            Ray shadowray = new Ray(I + 0.001f * L, L);
+            shadowray.t = distance;
+            foreach (Primitive p in primitives)
+            {
+                Intersection intersect = p.Intersect(shadowray);
+                if (intersect != null) //&& intersectie is dichterbij de lamp als de originele intersectie
+                    if (CalcMethods.VectorLength(intersect.intersectionPoint - ((L*distance)+I)) < distance)
+                        return false;
+            }
+            //add 1 to the counter for each (pair of) shadow ray(s)
+            if (I.Y == 0 && count % 10 == 0)
+                Draw2DRay(shadowray, 101111);
+            count++;
+
+            return true;
         }
 
         public void Draw2DRay(Ray ray, int color)

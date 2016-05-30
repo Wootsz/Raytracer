@@ -32,7 +32,7 @@ namespace template
                 {
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / scene.screenWidth) + y * (camera.LBCorner - camera.LTCorner) / scene.screenHeight)));
                     ray.t = 1000;
-                    Vector3 color = scene.Intersect(ray);
+                    Vector3 color = scene.Intersect(ray, 2);
                     OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
 
                     if (y == scene.screenHeight / 2 && x % 10 == 0)
