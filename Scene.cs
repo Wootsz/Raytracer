@@ -32,7 +32,7 @@ namespace template
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(-10, 20, -5), 1, 1, 1);
+            light1 = new Light(new Vector3(-10, 20, -5), 1f, 1f, 1f);
             lightSources.Add(light1);
         }
 
@@ -52,7 +52,7 @@ namespace template
                         smallest = i;
                 }
                 if (smallest != null)
-                    return LightIntensity(smallest) * smallest.nearestPrimitive.color;
+                    return LightIntensity(smallest) * smallest.nearestPrimitive.Color(smallest.intersectionPoint);
                     //return (1 - smallest.nearestPrimitive.specularity) * LightIntensity(smallest) * smallest.nearestPrimitive.color + 
                             //smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
                 else
@@ -70,18 +70,21 @@ namespace template
             foreach (Light light in lightSources)
             {
                 Ray shadowray = new Ray(i.intersectionPoint +  i.normal * 0.01f, CalcMethods.Normalize(light.location - i.intersectionPoint));
-                //shadowray.t = CalcMethods.VectorLength(light.location - i.intersectionPoint);
+                shadowray.t = CalcMethods.VectorLength(light.location - i.intersectionPoint);
                 bool occlusion = false;
                 foreach (Primitive p in primitives)
                 {
-                    if (p.Occlusion(shadowray))
-                    {
-                        occlusion = true;
-                        break;
-                    }
+                    if (p.Intersect(shadowray) != null)
+                        if(i.ray.t > shadowray.t)
+                        {
+                            occlusion = true;
+                            break;
+                        }
                 }
+                // INTENSITY FACTOR FOR LIGHT ANGLE CALCULATION, WIP, GROUND WORKS, SPHERES ARE A LITTLE WEIRD
+                float intensityFactor = CalcMethods.DotProduct(i.ray.direction, shadowray.direction);
                 if (!occlusion)
-                    lightintensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
+                    lightintensity += intensityFactor * new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
             }
             return lightintensity/lightSources.Count;
         }

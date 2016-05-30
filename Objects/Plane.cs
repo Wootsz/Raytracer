@@ -43,5 +43,10 @@ namespace template
                 return true;
             else return false;
         }
+
+        public override Vector3 Color(Vector3 point)
+        {
+            return color * ((int)(.125f + (.25f * point.X)) + (int)((.25f * point.Z)) & 1);
+        }
     }
 }

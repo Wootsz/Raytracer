@@ -15,5 +15,6 @@ namespace template
         public Primitive() { }
         public virtual Intersection Intersect(Ray ray) { return null; }
         public virtual bool Occlusion(Ray ray) { return false; }
+        public virtual Vector3 Color(Vector3 point) { return color; }
     }
 }
