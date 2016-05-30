@@ -22,10 +22,10 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 0, 0), 1);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 0, 0), 0);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 255, 0), 0.5f);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 255, 0), 0);
             primitives.Add(sphere2);
 
             sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 255), 0);
@@ -34,7 +34,7 @@ namespace template
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(20, 10, -10), 1,1,1);
+            light1 = new Light(new Vector3(20, 10, -10), 50,40,30);
             lightSources.Add(light1);
 
             //light2 = new Light(new Vector3(10, 20, -5), 1f, 1f, 1f);
@@ -69,12 +69,20 @@ namespace template
             }
             //If there IS an intersection with an object
             if (smallest != null)
-            {                
+            {   
                 float raylength = CalcMethods.VectorLength(smallest.intersectionPoint - ray.origin);
                 Vector3 color = LightIntensity(smallest);
                 color /= Math.Max(Math.Max(color.X, color.Y), color.Z);
-                //return the color: the color of the primitive (between 0 - 255) * the intensity of the light (between 0 - 1)
-                return color * smallest.nearestPrimitive.Color(smallest.intersectionPoint);
+                
+                if (smallest.nearestPrimitive.specularity == 0)
+                    return color * smallest.nearestPrimitive.Color(smallest.intersectionPoint);
+
+                else if (smallest.nearestPrimitive.specularity == 1)
+                    return SecondaryRay(smallest, ray);
+
+                else
+                    return (1 - smallest.nearestPrimitive.specularity) * color * smallest.nearestPrimitive.Color(smallest.intersectionPoint) +
+                    smallest.nearestPrimitive.specularity * SecondaryRay(smallest, ray);
             }
             //If there were no intersections, return Vector3.Zero, which corresponds to a black color
             else
@@ -118,21 +126,25 @@ namespace template
                 // INTENSITY FACTOR FOR LIGHT ANGLE CALCULATION, WIP, GROUND WORKS, SPHERES ARE A LITTLE WEIRD
                 if (!occlusion)
                 {
+                    Vector3 l = new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity);
                     float intensityFactor = CalcMethods.DotProduct(shadowray.direction, i.normal);
                     float shadowraylength = CalcMethods.VectorLength(light.location - i.intersectionPoint);
-                    lightintensity += intensityFactor * new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity) / (shadowraylength*shadowraylength);
+                    //Vector3 R = shadowray.direction - 2*(CalcMethods.DotProduct(shadowray.direction, i.normal)*i.normal);
+                    lightintensity += l * intensityFactor / (shadowraylength*shadowraylength) /* * (float)Math.Pow(CalcMethods.DotProduct(l,R),i.nearestPrimitive.specularity)*/;
                 }
             }
             lightintensity /= lightSources.Count;
             return lightintensity;
         }
 
-        //public Vector3 SecondaryRay(Intersection i, Ray ray)
-        //{
-        //    Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
-        //    Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
-        //    return Intersect(secondray);
-        //}
+        public Vector3 SecondaryRay(Intersection i, Ray ray)
+        {
+            Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, i.normal) * i.normal;
+            Ray secondray = new Ray(i.intersectionPoint + i.normal * 0.01f, CalcMethods.Normalize(R));
+            secondray.t = 100;
+            Draw2DRay(secondray, 255255);
+            return Intersect(secondray);
+        }
 
         public void Draw2DRay(Ray ray, int color)
         {
