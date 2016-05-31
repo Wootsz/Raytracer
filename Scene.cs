@@ -22,16 +22,16 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 1f);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 0f);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(100, 255, 100), .5f);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(100, 255, 100), 0f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), .1f);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), 0f);
             primitives.Add(sphere3);
 
-            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), .2f);
+            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0f);
             primitives.Add(plane1);
 
             light1 = new Light(new Vector3(20, 10, -10), 255,255,255);
