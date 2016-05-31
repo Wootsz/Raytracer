@@ -13,9 +13,10 @@ namespace template
         public List<Light> lightSources;
         Sphere sphere1, sphere2, sphere3;
         Plane plane1;
+        Triangle triangle1;
         Light light1, light2;
         public int screenWidth, screenHeight, debugXtop, debugXbottom, debugYtop, debugYbottom;
-        int count = 0;
+        int count = 0, count2 = 0;
 
         public Scene()
         {
@@ -23,21 +24,19 @@ namespace template
             lightSources = new List<Light>();
 
             sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 1f);
-            primitives.Add(sphere1);
-
             sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(100, 255, 100), .5f);
-            primitives.Add(sphere2);
-
             sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), .1f);
-            primitives.Add(sphere3);
-
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), .2f);
-            primitives.Add(plane1);
-
+            triangle1 = new Triangle(new Vector3(255, 0, 255), new Vector3(15, 10, 20), new Vector3(10, 0, 20), new Vector3(20, 0, 20), .1f);
             light1 = new Light(new Vector3(20, 10, -10), 255,255,255);
-            lightSources.Add(light1);
-
             light2 = new Light(new Vector3(-20, 5, 20), 255, 255, 255);
+
+            //primitives.Add(sphere1);
+            //primitives.Add(sphere2);
+            //primitives.Add(sphere3);
+            //primitives.Add(plane1);
+            primitives.Add(triangle1);
+            lightSources.Add(light1);
             lightSources.Add(light2);
 
             screenHeight = Template.OpenTKApp.screen.height;
@@ -69,14 +68,17 @@ namespace template
             float s = smallest.nearestPrimitive.specularity;
             if (recursionTimes > 0 && s != 0)
             { 
+                count2++;
                 recursionTimes--;
                 Vector3 R = ray.direction - (2 * CalcMethods.DotProduct(ray.direction, N) * N);
                 Ray secondray = new Ray(smallest.intersectionPoint + N * 0.001f, CalcMethods.Normalize(R));
                 secondray.t = 1000;
-                Draw2DRay(secondray, 255255);
+                if (secondray.origin.Y == 0 && count%10 == 0)
+                    Draw2DRay(secondray, 255255);
                 return (1 - s) * DirectIllumination(smallest.intersectionPoint, smallest.normal) * c +
                     s * Intersect(secondray, recursionTimes);
             }
+            //
             else
                 return DirectIllumination(I, N) * c;
         }
@@ -119,6 +121,7 @@ namespace template
                         Math.Min(1, CalcMethods.DotProduct(N, L)) * Math.Min(1, attenuation);
                 }
             }
+            //return the intensity and color of the light, and cap it to 255, otherwise it'll be weird
             return new Vector3(Math.Min(255, lightIntensity.X), Math.Min(255, lightIntensity.Y), Math.Min(255, lightIntensity.Z));
         }
 
