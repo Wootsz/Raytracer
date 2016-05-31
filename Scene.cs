@@ -22,16 +22,16 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 0, 0),1);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 1f);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 255, 0), 0);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(100, 255, 100), .5f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 255), 0);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), .1f);
             primitives.Add(sphere3);
 
-            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
+            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), .2f);
             primitives.Add(plane1);
 
             light1 = new Light(new Vector3(20, 10, -10), 255,255,255);
@@ -70,18 +70,20 @@ namespace template
             if (recursionTimes > 0 && s != 0)
             { 
                 recursionTimes--;
-                Vector3 R = ray.direction - 2 * CalcMethods.DotProduct(ray.direction, N) * N;
+                Vector3 R = ray.direction - (2 * CalcMethods.DotProduct(ray.direction, N) * N);
                 Ray secondray = new Ray(smallest.intersectionPoint + N * 0.001f, CalcMethods.Normalize(R));
-                secondray.t = 100;
-                //Draw2DRay(secondray, 255255);
-                if (s == 1)
-                    return Intersect(secondray, recursionTimes) * c;
-                else
-                    return (s - 1) * DirectIllumination(smallest.intersectionPoint, smallest.normal) * c +
-                        s * Intersect(secondray, recursionTimes) * c;
+                secondray.t = 1000;
+                Draw2DRay(secondray, 255255);
+                return (1 - s) * DirectIllumination(smallest.intersectionPoint, smallest.normal) * c +
+                    s * Intersect(secondray, recursionTimes);
             }
             else
                 return DirectIllumination(I, N) * c;
+        }
+
+        public Vector3 Colorcap(Vector3 c)
+        {
+            return new Vector3(Math.Min(1, c.X), Math.Min(1, c.Y), Math.Min(1, c.Z));
         }
 
         public Intersection IntersectScene(Ray ray)
@@ -170,7 +172,6 @@ namespace template
 
             if (y2 > screenHeight)
             {
-
                 x2 += (int)((screenHeight - y2) * ((float)(x2 - x1) / (float)(y2 - y1)));
                 y2 = screenHeight - 1;
             }
