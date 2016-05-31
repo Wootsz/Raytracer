@@ -19,11 +19,12 @@ namespace template
         /// <param name="radius">Radius of the sphere</param>
         /// <param name="color">Color of the object</param>
         /// <param name="specularity">Value between 0 and 1, indicating the specularity, or reflectiveness</param>
-        public Sphere(Vector3 position, float radius, Vector3 color, float specularity = 0)
+        public Sphere(Vector3 position, float radius, Vector3 color, float specularity)
         {
             this.position = position;
             this.radius = radius;
-            this.color = color; 
+            this.color = color;
+            this.specularity = specularity;
         }
 
         public override Intersection Intersect(Ray ray)

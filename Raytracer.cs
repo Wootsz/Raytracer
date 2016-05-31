@@ -18,8 +18,6 @@ namespace template
             camera = new Camera(Vector3.Zero, new Vector3(0, 0, 1));
             scene = new Scene();
             camera.position = Vector3.Zero;
-            
-
         }
 
         public void Render()
@@ -32,12 +30,19 @@ namespace template
                 {
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / scene.screenWidth) + y * (camera.LBCorner - camera.LTCorner) / scene.screenHeight)));
                     ray.t = 1000;
-                    Vector3 color = scene.Intersect(ray, 2);
+                    Vector3 color = scene.Intersect(ray, 0);
                     OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
 
                     if (y == scene.screenHeight / 2 && x % 10 == 0)
                         scene.Draw2DRay(ray, 16711680);
-                    
+                }
+            }
+            foreach (Primitive p in scene.primitives)
+            {
+                if (p is Sphere)
+                {
+                    Sphere s = p as Sphere;
+                    scene.Draw2DCircle(s.position, s.radius);
                 }
             }
         }

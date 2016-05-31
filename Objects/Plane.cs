@@ -23,6 +23,7 @@ namespace template
             this.normal = normal;
             this.distance = distance;
             this.color = color;
+            this.specularity = specularity;
         }
 
         public override Intersection Intersect(Ray ray)

@@ -22,23 +22,23 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(200, 0, 0), 0);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 0, 0),1);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 200, 0), 0);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(0, 255, 0), 0);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 200), 0);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(0, 0, 255), 0);
             primitives.Add(sphere3);
 
             plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0);
             primitives.Add(plane1);
 
-            light1 = new Light(new Vector3(20, 10, -10), 500,500,500);
+            light1 = new Light(new Vector3(20, 10, -10), 255,255,255);
             lightSources.Add(light1);
 
-            //light2 = new Light(new Vector3(-20, 10, -10), 500, 500, 500);
-            //lightSources.Add(light2);
+            light2 = new Light(new Vector3(-20, 5, 20), 255, 255, 255);
+            lightSources.Add(light2);
 
             screenHeight = Template.OpenTKApp.screen.height;
             screenWidth = Template.OpenTKApp.screen.width / 2;
@@ -62,6 +62,8 @@ namespace template
                 return Vector3.Zero;
             //If there IS an intersection with an object
             Vector3 c = smallest.nearestPrimitive.Color(smallest.intersectionPoint);
+            if (smallest.nearestPrimitive is Sphere)
+                c *= -1;
             Vector3 N = smallest.normal;
             Vector3 I = smallest.intersectionPoint;
             float s = smallest.nearestPrimitive.specularity;
@@ -108,13 +110,14 @@ namespace template
                 Vector3 L = light.location - I;
                 float distance = CalcMethods.VectorLength(L);
                 L *= (1.0f / distance);
-                if (!IsVisible(I, L, distance))
-                    break;
-                float attenuation = 1 / (distance * distance);
-                lightIntensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity) * 
-                    CalcMethods.DotProduct(N, L) * attenuation;
+                if (IsVisible(I, L, distance))
+                {
+                    float attenuation = 1 / (distance * distance);
+                    lightIntensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity) *
+                        Math.Min(1, CalcMethods.DotProduct(N, L)) * Math.Min(1, attenuation);
+                }
             }
-            return lightIntensity;
+            return new Vector3(Math.Min(255, lightIntensity.X), Math.Min(255, lightIntensity.Y), Math.Min(255, lightIntensity.Z));
         }
 
         /// <summary>
@@ -173,5 +176,18 @@ namespace template
             }
             Template.OpenTKApp.screen.Line(x1, y1, x2, y2, color);
         }
+
+        public void Draw2DCircle(Vector3 center, float r)
+        {
+            for (float t = 0; t < Math.PI * 2; t += (float)Math.PI / 50)
+            {
+                int x1 = (int)((center.X - debugXbottom + Math.Cos(t) * r) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
+                int y1 = screenHeight - (int)((center.Z - debugYbottom + Math.Sin(t) * r) / (debugYtop - debugYbottom) * screenHeight);
+                int x2 = (int)(((center.X + (Math.Cos(t + (float)Math.PI / 50) * r)) - debugXbottom) / (debugXtop - debugXbottom) * screenWidth + screenWidth);
+                int y2 = screenHeight - (int)(((center.Z + (Math.Sin(t + (float)Math.PI / 50) * r)) - debugYbottom) / (debugYtop - debugYbottom) * screenHeight);
+                Template.OpenTKApp.screen.Line(x1, y1, x2, y2, 255);
+            }
+        }
+
     }
 }

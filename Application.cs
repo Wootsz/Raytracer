@@ -28,26 +28,7 @@ namespace template
         public void HandleKeyBoard()
         {
             var keyboard = OpenTK.Input.Keyboard.GetState();
-            if (keyboard[OpenTK.Input.Key.D])
-            {
-                raytracer.camera.position.X += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-            }
-            if (keyboard[OpenTK.Input.Key.A])
-            {
-                raytracer.camera.position.X -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-            }
-            if (keyboard[OpenTK.Input.Key.S])
-            {
-                raytracer.camera.position.X += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-            }
-            if (keyboard[OpenTK.Input.Key.W])
-            {
-                raytracer.camera.position.X -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-            }
+            
             if (keyboard[OpenTK.Input.Key.Space])
                 raytracer.camera.position.Y += velocity;
             if (keyboard[OpenTK.Input.Key.ShiftLeft])
@@ -73,7 +54,26 @@ namespace template
                 raytracer.camera.direction = CalcMethods.Normalize(raytracer.camera.direction - CalcMethods.CrossProduct(raytracer.camera.direction, Vector3.UnitX) * .05f);
                 raytracer.camera.SetCorners();
             }
-
+            if (keyboard[OpenTK.Input.Key.D])
+            {
+                raytracer.camera.position.X += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.Z += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+            }
+            if (keyboard[OpenTK.Input.Key.A])
+            {
+                raytracer.camera.position.X -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.Z -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+            }
+            if (keyboard[OpenTK.Input.Key.S])
+            {
+                raytracer.camera.position.X += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.Z -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+            }
+            if (keyboard[OpenTK.Input.Key.W])
+            {
+                raytracer.camera.position.X -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.Z += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+            }
         }
     }
 }
