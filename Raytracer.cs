@@ -12,12 +12,14 @@ namespace template
     {
         public Scene scene;
         public Camera camera;
+        public static int recursionTimes;
 
         public Raytracer()
         {
             camera = new Camera(Vector3.Zero, new Vector3(0, 0, 1));
             scene = new Scene();
             camera.position = Vector3.Zero;
+            recursionTimes = 2;
         }
 
         public void Render()
@@ -29,12 +31,16 @@ namespace template
                 for (int y = 0; y < scene.screenHeight; y++)
                 {
                     ray = new Ray(camera.position, CalcMethods.Normalize(new Vector3(camera.LTCorner + (x * (camera.RTCorner - camera.LTCorner) / scene.screenWidth) + y * (camera.LBCorner - camera.LTCorner) / scene.screenHeight)));
+                    if (y == scene.screenHeight / 2 && x % 50 == 0)
+                    {
+                        ray.draw2D = true;
+                    }
                     ray.t = 1000;
-                    Vector3 color = scene.Intersect(ray, 2);
-                    OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
-
-                    if (y == scene.screenHeight / 2 && x % 10 == 0)
+                    Vector3 color = scene.Intersect(ray, recursionTimes);
+                    if(ray.draw2D)
                         scene.Draw2DRay(ray, 16711680);
+                    
+                    OpenTKApp.screen.Plot(x, y, CreateColor((int)color.X, (int)color.Y, (int)color.Z));
                 }
             }
             foreach (Primitive p in scene.primitives)

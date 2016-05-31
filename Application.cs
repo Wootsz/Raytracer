@@ -56,23 +56,23 @@ namespace template
             }
             if (keyboard[OpenTK.Input.Key.D])
             {
-                raytracer.camera.position.X += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.X += velocity * (float)(raytracer.camera.direction.Z);
+                raytracer.camera.position.Z -= velocity * (float)(raytracer.camera.direction.X);
             }
             if (keyboard[OpenTK.Input.Key.A])
             {
-                raytracer.camera.position.X -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.X -= velocity * (float)(raytracer.camera.direction.Z);
+                raytracer.camera.position.Z += velocity * (float)(raytracer.camera.direction.X);
             }
             if (keyboard[OpenTK.Input.Key.S])
             {
-                raytracer.camera.position.X += velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z -= velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.X -= velocity * (float)(raytracer.camera.direction.X);
+                raytracer.camera.position.Z -= velocity * (float)(raytracer.camera.direction.Z);
             }
             if (keyboard[OpenTK.Input.Key.W])
             {
-                raytracer.camera.position.X -= velocity * (float)(Math.Sin(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
-                raytracer.camera.position.Z += velocity * (float)(Math.Cos(raytracer.camera.direction.X) * Math.Cos(raytracer.camera.direction.Z));
+                raytracer.camera.position.X += velocity * (float)(raytracer.camera.direction.X);
+                raytracer.camera.position.Z += velocity * (float)(raytracer.camera.direction.Z);
             }
         }
     }
