@@ -22,16 +22,16 @@ namespace template
             primitives = new List<Primitive>();
             lightSources = new List<Light>();
 
-            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 0f);
+            sphere1 = new Sphere(new Vector3(20, 0, 30), 5, new Vector3(255, 255, 255), 0.5f);
             primitives.Add(sphere1);
 
-            sphere2 = new Sphere(new Vector3(0, 0, 30), 5, new Vector3(100, 255, 100), 0f);
+            sphere2 = new Sphere(new Vector3(0, 0, 30), 10, new Vector3(100, 255, 100), 0.5f);
             primitives.Add(sphere2);
 
-            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), 0f);
+            sphere3 = new Sphere(new Vector3(-20, 0, 30), 5, new Vector3(100, 100, 255), 0.5f);
             primitives.Add(sphere3);
 
-            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0f);
+            plane1 = new Plane(new Vector3(0, 1, 0), 10, new Vector3(255, 255, 255), 0.5f);
             primitives.Add(plane1);
 
             light1 = new Light(new Vector3(20, 10, -10), 255,255,255);
@@ -73,12 +73,16 @@ namespace template
                 Vector3 R = ray.direction - (2 * CalcMethods.DotProduct(ray.direction, N) * N);
                 Ray secondray = new Ray(smallest.intersectionPoint + N * 0.001f, CalcMethods.Normalize(R));
                 secondray.t = 1000;
-                Draw2DRay(secondray, 255255);
-                return (1 - s) * DirectIllumination(smallest.intersectionPoint, smallest.normal) * c +
+                Vector3 result = (1 - s) * DirectIllumination(smallest.intersectionPoint, smallest.normal, ray.draw2D) * c +
                     s * Intersect(secondray, recursionTimes);
+                if (ray.draw2D)
+                {
+                    Draw2DRay(secondray, 255255);
+                }
+                return result;
             }
             else
-                return DirectIllumination(I, N) * c;
+                return DirectIllumination(I, N, ray.draw2D) * c;
         }
 
         public Vector3 Colorcap(Vector3 c)
@@ -103,7 +107,7 @@ namespace template
             return smallest;
         }
 
-        public Vector3 DirectIllumination(Vector3 I, Vector3 N)
+        public Vector3 DirectIllumination(Vector3 I, Vector3 N, bool draw2D)
         {            
             //Make a Vector3 lightintensity and set it to 0, in case there were no lights reachable
             Vector3 lightIntensity = Vector3.Zero;
@@ -112,7 +116,7 @@ namespace template
                 Vector3 L = light.location - I;
                 float distance = CalcMethods.VectorLength(L);
                 L *= (1.0f / distance);
-                if (IsVisible(I, L, distance))
+                if (IsVisible(I, L, distance, draw2D))
                 {
                     float attenuation = 1 / (distance * distance);
                     lightIntensity += new Vector3(light.redIntensity, light.greenIntensity, light.blueIntensity) *
@@ -125,7 +129,7 @@ namespace template
         /// <summary>
         /// Method checking whether something is visible
         /// </summary>
-        public bool IsVisible(Vector3 I, Vector3 L, float distance)
+        public bool IsVisible(Vector3 I, Vector3 L, float distance, bool draw2D)
         {
             //Make a shadow ray: origin is the intersectionpoint + small offset, direction is the light source
             Ray shadowray = new Ray(I + 0.001f * L, L);
@@ -137,10 +141,8 @@ namespace template
                     if (CalcMethods.VectorLength(intersect.intersectionPoint - ((L*distance)+I)) < distance)
                         return false;
             }
-            //add 1 to the counter for each (pair of) shadow ray(s)
-            if (I.Y == 0 && count % 10 == 0)
+            if (draw2D)
                 Draw2DRay(shadowray, 101111);
-            count++;
 
             return true;
         }
@@ -175,6 +177,9 @@ namespace template
                 x2 += (int)((screenHeight - y2) * ((float)(x2 - x1) / (float)(y2 - y1)));
                 y2 = screenHeight - 1;
             }
+
+            if ((x1 < screenWidth || x2 < screenWidth))
+                return;
             Template.OpenTKApp.screen.Line(x1, y1, x2, y2, color);
         }
 

@@ -11,6 +11,7 @@ namespace template
     {
         public Vector3 origin, direction;
         public float t;
+        public bool draw2D;
 
         public Ray(Vector3 origin, Vector3 direction)
         {
